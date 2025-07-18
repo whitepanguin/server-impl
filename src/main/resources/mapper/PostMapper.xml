@@ -11,24 +11,41 @@
     </insert>
 
     <select id="getPosts" resultType="com.koreait.server.dto.PostDTO">
-        SELECT * FROM post
+        SELECT
+            id,
+            title,
+            content,
+            writer_id AS writerId,
+            created_at AS createdAt
+        FROM post
         ORDER BY created_at DESC
             LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="getPostById" parameterType="int" resultType="com.koreait.server.dto.PostDTO">
-        SELECT * FROM post WHERE id = #{id}
+        SELECT
+            id,
+            title,
+            content,
+            writer_id AS writerId,
+            created_at AS createdAt
+        FROM post
+        WHERE id = #{id}
     </select>
 
     <update id="updatePost" parameterType="com.koreait.server.dto.PostDTO">
         UPDATE post
-        SET title = #{title}, content = #{content}
-        WHERE id = #{id}
+        SET title = #{post.title}, content = #{post.content}
+        WHERE id = #{post.id}
     </update>
+
 
     <delete id="deletePost" parameterType="int">
         DELETE FROM post WHERE id = #{id}
     </delete>
 
-</mapper>
+    <select id="getTotalPostCount" resultType="int">
+        SELECT COUNT(*) FROM post
+    </select>
 
+</mapper>

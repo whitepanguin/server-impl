@@ -12,7 +12,7 @@
     <button onclick="showEdit()">[수정]</button>
     <button onclick="deletePost()">[삭제]</button>
 </div>
-<a href="/post-list.html">목록</a>
+<a href="/posts">목록</a>
 
 <div id="editForm" style="display:none">
     <input type="text" id="editTitle"><br><br>
@@ -21,21 +21,28 @@
 </div>
 
 <script>
+    // 🔐 로그인 토큰 확인
     const token = localStorage.getItem("jwt");
     if (!token) {
         alert("로그인이 필요합니다.");
-        window.location.href = "/login.html";
+        window.location.href = "/login";
     }
 
-    const params = new URLSearchParams(location.search);
-    const postId = params.get("id");
+    // ✅ 게시글 ID를 URL 경로에서 추출 (/posts/3 → 3)
+    const pathParts = window.location.pathname.split('/');
+    const postId = pathParts[pathParts.length - 1];
+
     let postWriterId = null;
     let currentUserId = null;
 
     async function loadPost() {
         const res = await fetch(`/api/post/${postId}`);
-        const post = await res.json();
+        if (!res.ok) {
+            alert("게시글을 불러오지 못했습니다.");
+            return;
+        }
 
+        const post = await res.json();
         postWriterId = post.writerId;
 
         const view = document.getElementById("detailView");
@@ -43,24 +50,25 @@
         document.getElementById("editTitle").value = post.title;
         document.getElementById("editContent").value = post.content;
 
-        // 로그인 유저 정보 요청
-        const token = localStorage.getItem("jwt");
-        if (!token) return;
-
         const infoRes = await fetch('/api/user/info', {
             headers: {
                 Authorization: 'Bearer ' + token
             }
         });
-
+        console.log(infoRes)
         if (infoRes.ok) {
             const user = await infoRes.json();
             currentUserId = user.id;
 
-            // 작성자와 로그인한 유저가 같다면 수정/삭제 버튼 노출
-            if (currentUserId === postWriterId) {
+            console.log("🔍 user info:", user); // 여기에 id가 들어 있어야 합니다
+            console.log("🔍 currentUserId:", currentUserId);
+            console.log("🔍 postWriterId:", postWriterId);
+            console.log("🔍 비교 결과:", currentUserId === postWriterId);
+
+            if (Number(currentUserId) === Number(postWriterId)) {
                 document.getElementById("editDeleteBtn").style.display = "block";
             }
+
         }
     }
 
@@ -72,22 +80,27 @@
         const title = document.getElementById("editTitle").value;
         const content = document.getElementById("editContent").value;
 
+        console.log("수정 요청", { title, content, postId });
+
         const res = await fetch(`/api/post/${postId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("jwt")
+                "Authorization": "Bearer " + token
             },
-            body: JSON.stringify({ title, content })
+            body: JSON.stringify({ title, content })  // ✅ 이 구조는 맞음
         });
 
         if (res.ok) {
             alert("수정 완료");
             location.reload();
         } else {
+            const errorText = await res.text();
+            console.error("수정 실패:", errorText);
             alert("수정 실패");
         }
     }
+
 
     async function deletePost() {
         const confirmed = confirm("정말 삭제하시겠습니까?");
@@ -96,13 +109,13 @@
         const res = await fetch(`/api/post/${postId}`, {
             method: "DELETE",
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem("jwt")
+                "Authorization": "Bearer " + token
             }
         });
 
         if (res.ok) {
             alert("삭제 완료");
-            window.location.href = "/post-list.html";
+            window.location.href = "/posts";
         } else {
             alert("삭제 실패");
         }

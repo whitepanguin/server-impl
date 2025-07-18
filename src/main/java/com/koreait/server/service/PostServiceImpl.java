@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -16,11 +18,21 @@ public class PostServiceImpl implements PostService {
         postMapper.insertPost(post);
     }
 
-    public List<PostDTO> getPostList(int page) {
+    public Map<String, Object> getPostList(int page) {
         int limit = 10;
         int offset = (page - 1) * limit;
-        return postMapper.getPosts(limit, offset);
+
+        List<PostDTO> posts = postMapper.getPosts(limit, offset);
+        int total = postMapper.getTotalPostCount(); // 새로 추가된 메서드
+        boolean hasNext = page * limit < total;
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("posts", posts);
+        result.put("hasNext", hasNext);
+        result.put("total", total);
+        return result;
     }
+
 
     public PostDTO getPostById(int id) {
         return postMapper.getPostById(id);

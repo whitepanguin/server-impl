@@ -42,6 +42,7 @@ public class PostController {
         return ResponseEntity.ok(postService.getPostList(page));
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getPostDetail(@PathVariable int id) {
         PostDTO post = postService.getPostById(id);

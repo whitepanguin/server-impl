@@ -6,7 +6,7 @@
 </head>
 <body>
 <h2>게시글 작성</h2>
-<form onsubmit="handleWrite(event)">
+<form id="writeForm">
     <input type="text" id="title" placeholder="제목" required><br><br>
     <textarea id="content" placeholder="내용" rows="5" cols="50" required></textarea><br><br>
     <button type="submit">작성</button>
@@ -14,39 +14,43 @@
 <a href="/posts">목록</a>
 
 <script>
-
-    const token = localStorage.getItem("jwt");
-    if (!token) {
-        alert("로그인이 필요합니다.");
-        window.location.href = "/login";
-    }
-    async function handleWrite(e) {
-        e.preventDefault();
-        const title = document.getElementById("title").value.trim();
-        const content = document.getElementById("content").value.trim();
-
-        const res = await fetch("/api/post/write", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("jwt")
-            },
-            body: JSON.stringify({ title, content })
-        });
-
-        if (res.ok) {
-            alert("작성 완료");
-            window.location.href = "/posts";
-        } else {
-            alert("작성 실패");
+    document.addEventListener("DOMContentLoaded", () => {
+        const token = localStorage.getItem("jwt");
+        if (!token) {
+            alert("로그인이 필요합니다.");
+            window.location.href = "/login";
+            return;
         }
-    }
 
-    const token = localStorage.getItem("jwt");
-    if (!token) {
-        alert("로그인이 필요합니다.");
-        location.href = "/login";
-    }
+        const form = document.getElementById("writeForm");
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const title = document.getElementById("title").value.trim();
+            const content = document.getElementById("content").value.trim();
+
+            try {
+                const res = await fetch("/api/post/write", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({ title, content })
+                });
+
+                if (res.ok) {
+                    alert("작성 완료");
+                    window.location.href = "/posts";
+                } else {
+                    const error = await res.text();
+                    alert("작성 실패: " + error);
+                }
+            } catch (err) {
+                alert("에러 발생: " + err.message);
+            }
+        });
+    });
 </script>
 </body>
 </html>

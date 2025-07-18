@@ -11,9 +11,9 @@
 </div>
 <div id="postList"></div>
 <br>
-<button onclick="prevPage()">이전</button>
+<button id="prevBtn" onclick="prevPage()">이전</button>
 <span id="pageDisplay">1</span>
-<button onclick="nextPage()">다음</button>
+<button id="nextBtn" onclick="nextPage()">다음</button>
 <br><br>
 <a href="/posts/write">[글쓰기]</a>
 
@@ -22,21 +22,40 @@
 
     async function fetchPosts() {
         const res = await fetch(`/api/post/list?page=${page}`);
-        const posts = await res.json();
+        const data = await res.json();
+        const posts = data.posts;
+        const hasNext = data.hasNext;
 
         const listDiv = document.getElementById("postList");
         listDiv.innerHTML = "";
+
         posts.forEach(post => {
             const item = document.createElement("div");
             item.innerHTML = `<a href="/posts/${post.id}">${post.title}</a>`;
             listDiv.appendChild(item);
         });
 
+        // 페이지 번호 표시
         document.getElementById("pageDisplay").innerText = page;
+
+        // 다음 버튼 표시 여부
+        document.getElementById("nextBtn").style.display = hasNext ? "inline-block" : "none";
+
+        // 이전 버튼 표시 여부
+        document.getElementById("prevBtn").style.display = page > 1 ? "inline-block" : "none";
     }
 
-    function nextPage() { page++; fetchPosts(); }
-    function prevPage() { if (page > 1) page--; fetchPosts(); }
+    function nextPage() {
+        page++;
+        fetchPosts();
+    }
+
+    function prevPage() {
+        if (page > 1) {
+            page--;
+            fetchPosts();
+        }
+    }
 
     fetchPosts();
 

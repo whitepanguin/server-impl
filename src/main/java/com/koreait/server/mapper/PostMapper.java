@@ -13,4 +13,5 @@ public interface PostMapper {
     PostDTO getPostById(@Param("id") int id);
     int updatePost(@Param("post") PostDTO post);
     int deletePost(@Param("id") int id);
+    int getTotalPostCount();
 }
