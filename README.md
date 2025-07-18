@@ -40,18 +40,31 @@ Spring Boot, MyBatis, JWT 인증을 활용한 간단한 게시판 REST API 프�
 ## 🗂 프로젝트 구조
 
 src/
+
 ├── main/
-│ ├── java/com/koreait/server/
-│ │ ├── config/ # 접근 허가
-│ │ ├── controller/ # REST + View Controller
-│ │ ├── service/ # 비즈니스 로직
-│ │ ├── mapper/ # MyBatis 인터페이스
-│ │ ├── dto/ # DTO 클래스
-│ │ └── jwt/ # JWT 유틸리티
-│ └── resources/
-│ ├── mapper/ # MyBatis XML
-│ ├── templates/ # HTML 파일
-│ └── application.yml
+
+│   ├── java/com/koreait/server/
+
+│   │   ├── config/         # Spring Security 설정 (Jwt 필터 및 권한 설정 등)
+
+│   │   ├── controller/     # REST API 및 View Controller
+
+│   │   ├── service/        # 비즈니스 로직 처리
+
+│   │   ├── mapper/         # MyBatis Mapper 인터페이스
+
+│   │   ├── dto/            # DTO (Data Transfer Object)
+
+│   │   └── jwt/            # JWT 토큰 관련 유틸리티 (생성, 파싱 등)
+
+│   └── resources/
+
+│       ├── mapper/         # MyBatis SQL XML 파일 (예: UserMapper.xml)
+
+│       ├── templates/      # Thymeleaf HTML 템플릿
+
+│       └── application.yml # 환경 설정 파일
+
 
 ---
 
