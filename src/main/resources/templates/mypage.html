@@ -8,11 +8,23 @@
 <body>
 <h2>마이페이지</h2>
 <div id="userInfo">로딩 중...</div>
+
+<!-- 📌 게시판 연결 버튼 -->
+<br><br>
+<button onclick="goToWritePage()">글쓰기</button>
+<button onclick="goToPostList()">게시글 목록</button>
+
+<br><br>
 <button onclick="logout()">로그아웃</button>
 
 <script>
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+        alert("로그인이 필요합니다.");
+        window.location.href = "/login";
+    }
+
     async function fetchUserInfo() {
-        const token = localStorage.getItem("jwt");
         const response = await fetch('/api/user/info', {
             method: 'GET',
             headers: {
@@ -30,15 +42,23 @@
         }
     }
 
-    async function logout() {
-        const token = localStorage.getItem("jwt");
-        await fetch('/api/user/logout', {
+    function logout() {
+        fetch('/api/user/logout', {
             method: 'POST',
             headers: { 'Authorization': 'Bearer ' + token }
+        }).then(() => {
+            localStorage.removeItem("jwt");
+            alert("로그아웃 완료");
+            window.location.href = "/";
         });
-        localStorage.removeItem("jwt");
-        alert("로그아웃 완료");
-        window.location.href = "/";
+    }
+
+    function goToWritePage() {
+        window.location.href = "/posts/write";  // 글쓰기 페이지
+    }
+
+    function goToPostList() {
+        window.location.href = "/posts"; // 게시글 목록
     }
 
     fetchUserInfo();

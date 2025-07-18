@@ -15,7 +15,7 @@
 <span id="pageDisplay">1</span>
 <button onclick="nextPage()">다음</button>
 <br><br>
-<a href="/post-write.html">[글쓰기]</a>
+<a href="/posts/write">[글쓰기]</a>
 
 <script>
     let page = 1;
@@ -28,7 +28,7 @@
         listDiv.innerHTML = "";
         posts.forEach(post => {
             const item = document.createElement("div");
-            item.innerHTML = `<a href="/post-detail.html?id=${post.id}">${post.title}</a>`;
+            item.innerHTML = `<a href="/posts/${post.id}">${post.title}</a>`;
             listDiv.appendChild(item);
         });
 
@@ -43,7 +43,7 @@
     function logout() {
         localStorage.removeItem("jwt");
         alert("로그아웃 완료");
-        location.href = "/login.html";
+        location.href = "/login";
     }
 </script>
 </body>

@@ -11,9 +11,15 @@
     <textarea id="content" placeholder="내용" rows="5" cols="50" required></textarea><br><br>
     <button type="submit">작성</button>
 </form>
-<a href="/post-list.html">목록</a>
+<a href="/posts">목록</a>
 
 <script>
+
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+        alert("로그인이 필요합니다.");
+        window.location.href = "/login";
+    }
     async function handleWrite(e) {
         e.preventDefault();
         const title = document.getElementById("title").value.trim();
@@ -30,7 +36,7 @@
 
         if (res.ok) {
             alert("작성 완료");
-            window.location.href = "/post-list.html";
+            window.location.href = "/posts";
         } else {
             alert("작성 실패");
         }
@@ -39,7 +45,7 @@
     const token = localStorage.getItem("jwt");
     if (!token) {
         alert("로그인이 필요합니다.");
-        location.href = "/login.html";
+        location.href = "/login";
     }
 </script>
 </body>

@@ -20,21 +20,33 @@
         const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value.trim();
 
-        const res = await fetch('/api/user/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
+        try {
+            const res = await fetch('/api/user/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
 
-        if (res.ok) {
-            const token = await res.text();
-            localStorage.setItem("jwt", token);
-            alert("로그인 성공");
-            window.location.href = "/post-list.html";
-        } else {
-            alert("로그인 실패: 아이디 또는 비밀번호 확인");
+            console.log("응답 상태 코드:", res.status);
+
+            if (res.ok) {
+                const token = await res.text();
+                console.log("받은 JWT 토큰:", token); // 🔍 토큰 확인
+
+                localStorage.setItem("jwt", token);
+                alert("로그인 성공");
+                window.location.href = "/mypage";
+            } else {
+                const errorText = await res.text();
+                console.warn("로그인 실패 응답:", errorText);
+                alert("로그인 실패: 아이디 또는 비밀번호 확인");
+            }
+        } catch (err) {
+            console.error("로그인 요청 실패:", err);
+            alert("네트워크 오류 또는 서버 에러");
         }
     }
 </script>
+
 </body>
 </html>

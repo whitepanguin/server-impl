@@ -21,6 +21,12 @@
 </div>
 
 <script>
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+        alert("로그인이 필요합니다.");
+        window.location.href = "/login.html";
+    }
+
     const params = new URLSearchParams(location.search);
     const postId = params.get("id");
     let postWriterId = null;

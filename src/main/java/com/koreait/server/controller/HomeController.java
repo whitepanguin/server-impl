@@ -29,24 +29,24 @@ public class HomeController {
     // 게시글 목록 페이지
     @GetMapping("/posts")
     public String postListPage() {
-        return "post_list"; // templates/post_list.html
+        return "post-list"; // templates/post_list.html
     }
 
     // 게시글 작성 페이지
     @GetMapping("/posts/write")
     public String postWritePage() {
-        return "post_write"; // templates/post_write.html
+        return "post-write"; // templates/post_write.html
     }
 
     // 게시글 상세 페이지
     @GetMapping("/posts/{id}")
     public String postDetailPage() {
-        return "post_detail"; // templates/post_detail.html
+        return "post-detail"; // templates/post_detail.html
     }
 
     // 게시글 수정 페이지
     @GetMapping("/posts/edit/{id}")
     public String postEditPage() {
-        return "post_edit"; // templates/post_edit.html
+        return "post-edit"; // templates/post_edit.html
     }
 }

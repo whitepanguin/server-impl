@@ -16,19 +16,15 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
 
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/", "/login", "/register",
-                                "/api/user/login", "/api/user/register",
-                                "/uploads/**", "/css/**", "/js/**",
-                                "/api/post/list", "/api/post/*" // ← 게시글 목록 및 상세는 허용
-                        ).permitAll()
-                        .anyRequest().authenticated() // 나머지는 인증 필요
+                        .anyRequest().permitAll()  // ✅ 모두 허용
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
