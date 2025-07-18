@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>글쓰기</title>
+</head>
+<body>
+<h2>게시글 작성</h2>
+<form onsubmit="handleWrite(event)">
+    <input type="text" id="title" placeholder="제목" required><br><br>
+    <textarea id="content" placeholder="내용" rows="5" cols="50" required></textarea><br><br>
+    <button type="submit">작성</button>
+</form>
+<a href="/post-list.html">목록</a>
+
+<script>
+    async function handleWrite(e) {
+        e.preventDefault();
+        const title = document.getElementById("title").value.trim();
+        const content = document.getElementById("content").value.trim();
+
+        const res = await fetch("/api/post/write", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("jwt")
+            },
+            body: JSON.stringify({ title, content })
+        });
+
+        if (res.ok) {
+            alert("작성 완료");
+            window.location.href = "/post-list.html";
+        } else {
+            alert("작성 실패");
+        }
+    }
+
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+        alert("로그인이 필요합니다.");
+        location.href = "/login.html";
+    }
+</script>
+</body>
+</html>

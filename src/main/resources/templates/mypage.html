@@ -1,0 +1,47 @@
+<!-- templates/mypage.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+</head>
+<body>
+<h2>마이페이지</h2>
+<div id="userInfo">로딩 중...</div>
+<button onclick="logout()">로그아웃</button>
+
+<script>
+    async function fetchUserInfo() {
+        const token = localStorage.getItem("jwt");
+        const response = await fetch('/api/user/info', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
+
+        if (response.ok) {
+            const user = await response.json();
+            document.getElementById("userInfo").innerText =
+                `아이디: ${user.username}`;
+        } else {
+            alert("로그인이 필요합니다.");
+            window.location.href = "/login";
+        }
+    }
+
+    async function logout() {
+        const token = localStorage.getItem("jwt");
+        await fetch('/api/user/logout', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        localStorage.removeItem("jwt");
+        alert("로그아웃 완료");
+        window.location.href = "/";
+    }
+
+    fetchUserInfo();
+</script>
+</body>
+</html>

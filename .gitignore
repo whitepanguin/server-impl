@@ -1,0 +1,85 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+# Java build files
+/build/
+/out/
+
+# IntelliJ IDEA
+.idea/
+
+# Mac
+.DS_Store
+
+# Log files
+*.log
+
+# OS-specific
+Thumbs.db
+
+# Node modules (만약 React 등 프론트엔드 포함 시)
+node_modules/
+
+# Environment & secrets
+.env
+.env.*
+*.env
+*.key
+*.pem
+*.crt
+
+# Spring Boot config (보안)
+application.properties
+application.yml
+application-*.properties
+application-*.yml
+
+# Gradle
+.gradle/
+.gradle-cache/
+*.jar
+*.war
+*.class
+
+# Test reports
+/test-output/
+
+# Database (예: H2 파일, SQLite 등)
+*.h2.db
+*.mv.db
+*.db

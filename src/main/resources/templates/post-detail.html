@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 상세</title>
+</head>
+<body>
+<h2>게시글 상세</h2>
+<div id="detailView"></div>
+<br>
+<div id="editDeleteBtn" style="display:none;">
+    <button onclick="showEdit()">[수정]</button>
+    <button onclick="deletePost()">[삭제]</button>
+</div>
+<a href="/post-list.html">목록</a>
+
+<div id="editForm" style="display:none">
+    <input type="text" id="editTitle"><br><br>
+    <textarea id="editContent" rows="5" cols="50"></textarea><br><br>
+    <button onclick="submitEdit()">수정 완료</button>
+</div>
+
+<script>
+    const params = new URLSearchParams(location.search);
+    const postId = params.get("id");
+    let postWriterId = null;
+    let currentUserId = null;
+
+    async function loadPost() {
+        const res = await fetch(`/api/post/${postId}`);
+        const post = await res.json();
+
+        postWriterId = post.writerId;
+
+        const view = document.getElementById("detailView");
+        view.innerHTML = `<h3>${post.title}</h3><p>${post.content}</p>`;
+        document.getElementById("editTitle").value = post.title;
+        document.getElementById("editContent").value = post.content;
+
+        // 로그인 유저 정보 요청
+        const token = localStorage.getItem("jwt");
+        if (!token) return;
+
+        const infoRes = await fetch('/api/user/info', {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        });
+
+        if (infoRes.ok) {
+            const user = await infoRes.json();
+            currentUserId = user.id;
+
+            // 작성자와 로그인한 유저가 같다면 수정/삭제 버튼 노출
+            if (currentUserId === postWriterId) {
+                document.getElementById("editDeleteBtn").style.display = "block";
+            }
+        }
+    }
+
+    function showEdit() {
+        document.getElementById("editForm").style.display = "block";
+    }
+
+    async function submitEdit() {
+        const title = document.getElementById("editTitle").value;
+        const content = document.getElementById("editContent").value;
+
+        const res = await fetch(`/api/post/${postId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("jwt")
+            },
+            body: JSON.stringify({ title, content })
+        });
+
+        if (res.ok) {
+            alert("수정 완료");
+            location.reload();
+        } else {
+            alert("수정 실패");
+        }
+    }
+
+    async function deletePost() {
+        const confirmed = confirm("정말 삭제하시겠습니까?");
+        if (!confirmed) return;
+
+        const res = await fetch(`/api/post/${postId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("jwt")
+            }
+        });
+
+        if (res.ok) {
+            alert("삭제 완료");
+            window.location.href = "/post-list.html";
+        } else {
+            alert("삭제 실패");
+        }
+    }
+
+    loadPost();
+</script>
+</body>
+</html>

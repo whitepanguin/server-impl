@@ -1,0 +1,72 @@
+<!-- templates/register.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+</head>
+<body>
+<h2>회원가입</h2>
+<form onsubmit="handleRegister(event)">
+    <label for="username">아이디:</label>
+    <input type="text" id="username" required><br><br>
+
+    <label for="password">비밀번호:</label>
+    <input type="password" id="password" required><br><br>
+
+    <label for="name">이름:</label>
+    <input type="text" id="name" required><br><br>
+
+    <label for="ph">전화번호:</label>
+    <input type="text" id="ph" placeholder="010-1234-5678" required><br><br>
+
+    <button type="submit">가입</button>
+</form>
+
+<script>
+    function isValidPhoneNumber(ph) {
+        // 간단한 형식: 010-XXXX-XXXX 또는 010XXXXXXXX
+        const phoneRegex = /^010[-]?\d{4}[-]?\d{4}$/;
+        return phoneRegex.test(ph);
+    }
+
+    async function handleRegister(event) {
+        event.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const name = document.getElementById("name").value.trim();
+        const ph = document.getElementById("ph").value.trim();
+
+
+        if (!username || !password || !name || !ph) {
+            alert("모든 필드를 입력해주세요.");
+            return;
+        }
+
+        if (password.length < 6) {
+            alert("비밀번호는 최소 6자리 이상이어야 합니다.");
+            return;
+        }
+
+        if (!isValidPhoneNumber(ph)) {
+            alert("전화번호 형식이 잘못되었습니다. 예: 010-1234-5678");
+            return;
+        }
+
+        const response = await fetch('/api/user/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password, name, ph })
+        });
+
+        if (response.ok) {
+            alert("회원가입 성공!");
+            window.location.href = "/login";
+        } else {
+            alert("회원가입 실패");
+        }
+    }
+</script>
+</body>
+</html>

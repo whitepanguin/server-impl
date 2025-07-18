@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 목록</title>
+</head>
+<body>
+<h2>게시글 목록</h2>
+<div>
+    <button onclick="logout()">로그아웃</button>
+</div>
+<div id="postList"></div>
+<br>
+<button onclick="prevPage()">이전</button>
+<span id="pageDisplay">1</span>
+<button onclick="nextPage()">다음</button>
+<br><br>
+<a href="/post-write.html">[글쓰기]</a>
+
+<script>
+    let page = 1;
+
+    async function fetchPosts() {
+        const res = await fetch(`/api/post/list?page=${page}`);
+        const posts = await res.json();
+
+        const listDiv = document.getElementById("postList");
+        listDiv.innerHTML = "";
+        posts.forEach(post => {
+            const item = document.createElement("div");
+            item.innerHTML = `<a href="/post-detail.html?id=${post.id}">${post.title}</a>`;
+            listDiv.appendChild(item);
+        });
+
+        document.getElementById("pageDisplay").innerText = page;
+    }
+
+    function nextPage() { page++; fetchPosts(); }
+    function prevPage() { if (page > 1) page--; fetchPosts(); }
+
+    fetchPosts();
+
+    function logout() {
+        localStorage.removeItem("jwt");
+        alert("로그아웃 완료");
+        location.href = "/login.html";
+    }
+</script>
+</body>
+</html>
